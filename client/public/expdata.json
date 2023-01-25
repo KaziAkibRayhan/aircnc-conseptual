@@ -30,5 +30,13 @@
     "price": 98,
     "host": "John Doe",
     "rating": "97"
+  },
+  {
+    "title": "See Extra Sunset in the beach",
+    "location": "Rangamati",
+    "image": "https://i.ibb.co/bB98pjR/Experience1.jpg",
+    "price": 98,
+    "host": "John Doe",
+    "rating": "97"
   }
 ]
