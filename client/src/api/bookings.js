@@ -4,6 +4,7 @@ export const saveBooking = async (bookingData) => {
     method: "POST",
     headers: {
       "content-type": "application/json",
+      authorization: `Bearer ${localStorage.getItem("aircnc-token")}`,
     },
     body: JSON.stringify(bookingData),
   });
