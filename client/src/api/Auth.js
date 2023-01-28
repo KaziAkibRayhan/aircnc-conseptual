@@ -1,20 +1,32 @@
-export const setAuthToken = (user) => {
+export const setAuthToken = user => {
   const currentUser = {
     email: user.email,
-  };
-  // save user in db & get token
+  }
+
+  //   Save user in db & get token
   fetch(`${process.env.REACT_APP_API_URL}/user/${user?.email}`, {
-    method: "PUT",
+    method: 'PUT',
     headers: {
-      "content-type": "application/json",
+      'content-type': 'application/json',
     },
     body: JSON.stringify(currentUser),
   })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data);
-      // save token in localestorage
-      localStorage.setItem("aircnc-token", data.token);
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      //Save token in LocalStorage
+      localStorage.setItem('aircnc-token', data.token)
     })
-    .catch((error) => console.error(error));
-};
+}
+
+export const saveBooking = bookingData => {
+  // Post method fetch
+  return fetch(`${process.env.REACT_APP_API_URL}/bookings`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${localStorage.getItem('aircnc-token')}`,
+    },
+    body: JSON.stringify(bookingData),
+  })
+}

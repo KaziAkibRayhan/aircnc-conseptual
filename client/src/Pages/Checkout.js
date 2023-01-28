@@ -2,54 +2,35 @@ import React, { Fragment, useContext, useState } from "react";
 import { Tab } from "@headlessui/react";
 import ReviewHouse from "../Components/Checkout/ReviewHouse";
 import CheckoutCart from "../Components/Checkout/CheckoutCart";
+import { Elements } from "@stripe/react-stripe-js";
 import WhosComing from "../Components/Checkout/WhosComing";
-import Payment from "../Components/Checkout/Payment";
 import { AuthContext } from "../contexts/AuthProvider";
-import { saveBooking } from "../api/bookings";
-import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
+import CheckoutForm from "../Components/Form/CheckoutForm";
+import { loadStripe } from "@stripe/stripe-js";
 
 const Checkout = () => {
   const { user } = useContext(AuthContext);
-  const homeData = {
-    _id: "60ehjhedhjdj3434",
-    location: "Dhaka, Bangladesh",
-    title: "Huge Apartment with 4 bedrooms",
-    image: "https://i.ibb.co/YPXktqs/Home1.jpg",
-    from: "17/11/2022",
-    to: "21/11/2022",
-    host: {
-      name: "John Doe",
-      image: "https://i.ibb.co/6JM5VJF/photo-1633332755192-727a05c4013d.jpg",
-      email: "johndoe@gmail.com",
-    },
-    price: 98,
-    total_guest: 4,
-    bedrooms: 2,
-    bathrooms: 2,
-    ratings: 4.8,
-    reviews: 64,
-  };
+  const { state: checkoutData } = useLocation();
+  const homeData = checkoutData.homeData;
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [bookingData, setBookingData] = useState({
+    home: {
+      id: checkoutData?.homeData?._id,
+      image: checkoutData?.homeData?.image,
+      title: checkoutData?.homeData?.title,
+      location: checkoutData?.homeData?.location,
+      from: checkoutData?.homeData?.from,
+      to: checkoutData?.homeData?.to,
+    },
     homeId: homeData._id,
-    hostEmail: homeData?.host?.email,
+    hostEmail: checkoutData?.homeData?.host?.email,
     message: "",
-    totalPrice: parseFloat(homeData.price) + 31,
+    price: parseFloat(checkoutData?.totalPrice),
     guestEmail: user?.email,
   });
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const handleBooking = () => {
-    console.log(bookingData);
-    saveBooking(bookingData)
-      .then((data) => {
-        console.log(data);
-        toast.success("Booking Successful!");
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error(err?.message);
-      });
-  };
 
   return (
     <div className="md:flex gap-5 items-start justify-between sm:mx-10 md:mx-20 px-4 lg:mx-40 py-4">
@@ -123,27 +104,40 @@ const Checkout = () => {
           </Tab.List>
           <Tab.Panels>
             <Tab.Panel>
-              <ReviewHouse setSelectedIndex={setSelectedIndex} />
+              <ReviewHouse
+                setSelectedIndex={setSelectedIndex}
+                homeData={{
+                  ...checkoutData?.homeData,
+                  totalNights: checkoutData?.totalNights,
+                }}
+              />
             </Tab.Panel>
             <Tab.Panel>
               {/* WhosComing Comp */}
               <WhosComing
                 setSelectedIndex={setSelectedIndex}
-                host={homeData?.host}
+                host={checkoutData?.homeData?.host}
                 bookingData={bookingData}
                 setBookingData={setBookingData}
               />
             </Tab.Panel>
             <Tab.Panel>
               {/* Payment Comp */}
-              <Payment handleBooking={handleBooking} />
+              <Elements stripe={stripePromise}>
+                <CheckoutForm bookingData={bookingData} />
+              </Elements>
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
       </div>
 
       {/* Cart */}
-      <CheckoutCart />
+      <CheckoutCart
+        homeData={{
+          ...checkoutData?.homeData,
+          totalNights: checkoutData?.totalNights,
+        }}
+      />
     </div>
   );
 };

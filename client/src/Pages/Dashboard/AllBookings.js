@@ -1,20 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getBookings } from "../../api/bookings";
-
+import { getAllBookings } from "../../api/bookings";
 import PrimaryButton from "../../Components/Button/PrimaryButton";
 import TableRow from "../../Components/TableRow";
 import { AuthContext } from "../../contexts/AuthProvider";
 
-const MyBookings = () => {
-  const { user } = useContext(AuthContext);
+const AllBookings = () => {
+  // const { user } = useContext(AuthContext)
   const [bookings, setBookings] = useState([]);
   const fetchBookings = () =>
-    getBookings(user?.email).then((data) => setBookings(data));
+    getAllBookings().then((data) => setBookings(data));
 
   useEffect(() => {
     fetchBookings();
-  }, [user]);
+  }, []);
 
   console.log(bookings);
   return (
@@ -67,7 +66,7 @@ const MyBookings = () => {
                   </thead>
                   <tbody>
                     {bookings &&
-                      bookings.map((booking) => (
+                      bookings?.map((booking) => (
                         <TableRow
                           key={booking._id}
                           booking={booking}
@@ -83,12 +82,7 @@ const MyBookings = () => {
       ) : (
         <>
           <div className="h-screen text-gray-600 gap-5 flex flex-col justify-center items-center pb-16 text-xl lg:text-3xl">
-            You haven't booked booked any home yet.
-            <Link to="/all-homes">
-              <PrimaryButton classes="px-6 py-2 text-medium font-semibold rounded-full">
-                Browse Homes
-              </PrimaryButton>
-            </Link>
+            There's no booking data available right now.
           </div>
         </>
       )}
@@ -96,4 +90,4 @@ const MyBookings = () => {
   );
 };
 
-export default MyBookings;
+export default AllBookings;

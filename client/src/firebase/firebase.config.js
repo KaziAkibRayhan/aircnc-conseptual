@@ -1,12 +1,12 @@
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCToesawKVgrpY9PUPuExwhQx1fM0LqNQw",
-  authDomain: "aircnc-fa180.firebaseapp.com",
-  projectId: "aircnc-fa180",
-  storageBucket: "aircnc-fa180.appspot.com",
-  messagingSenderId: "874247667242",
-  appId: "1:874247667242:web:d7f63786af5885e8c4cd53",
+  apiKey: process.env.REACT_APP_apiKey,
+  authDomain: process.env.REACT_APP_authDomain,
+  projectId: process.env.REACT_APP_projectId,
+  storageBucket: process.env.REACT_APP_storageBucket,
+  messagingSenderId: process.env.REACT_APP_messagingSenderId,
+  appId: process.env.REACT_APP_appId,
 };
 
 const app = initializeApp(firebaseConfig);

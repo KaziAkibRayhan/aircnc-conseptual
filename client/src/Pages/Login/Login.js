@@ -24,6 +24,7 @@ const Login = () => {
       .then((result) => {
         toast.success("Login Successful !");
         setAuthToken(result.user);
+        setLoading(false);
         navigate(from, { replace: true });
       })
       .catch((error) => {
@@ -38,6 +39,7 @@ const Login = () => {
       .then((result) => {
         console.log(result.user);
         setAuthToken(result.user);
+        setLoading(false);
         navigate(from, { replace: true });
       })
       .catch((error) => console.error(error));

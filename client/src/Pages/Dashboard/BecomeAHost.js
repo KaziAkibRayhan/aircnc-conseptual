@@ -30,20 +30,22 @@ const BecomeAHost = () => {
         email: user?.email,
       };
       console.log(hostData);
-      hostRequest(hostData).then((data) => console.log(data));
+      hostRequest(hostData).then((data) => {
+        console.log(data);
+        setRole("requested");
+      });
     });
   };
 
   return (
     <>
-      {/* {role ? (
+      {role ? (
         <div className="h-screen text-gray-600 flex flex-col justify-center items-center pb-16 text-xl lg:text-3xl">
           Request Sent, wait for admin approval
         </div>
       ) : (
         <>{!loading && <BecomeHostForm handleSubmit={handleSubmit} />}</>
-      )} */}
-      <BecomeHostForm handleSubmit={handleSubmit} />
+      )}
     </>
   );
 };
